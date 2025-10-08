@@ -1,5 +1,6 @@
 ﻿using RegistrationApi.Data;
 using RegistrationApi.Models;
+using RegistrationApi.Repositories;
 
 namespace RegistrationApi.Services
 
@@ -10,7 +11,7 @@ namespace RegistrationApi.Services
         {
             if (RegistrationDbContext.Users.First(u => u.email == email) != null) return "Пользователь с таким email уже есть";
 
-            User.CreateUser(0, email, password);
+            UsersRepository.AddUser(email, password);
             return "Успех";
         }
     }
