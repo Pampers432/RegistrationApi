@@ -1,4 +1,5 @@
-﻿using RegistrationApi.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using RegistrationApi.Data;
 using RegistrationApi.Models;
 
 namespace RegistrationApi.Repositories
@@ -9,7 +10,11 @@ namespace RegistrationApi.Repositories
         {
             var user = User.CreateUser(email, password);
 
-            RegistrationDbContext.Users.Add(user);
+            using (var db = new RegistrationDbContext(new DbContextOptions<RegistrationDbContext>()))
+            {
+                db.Users.Add(user);
+                db.SaveChanges();
+            }
         }
     }
 }

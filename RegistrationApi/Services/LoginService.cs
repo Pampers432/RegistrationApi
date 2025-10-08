@@ -1,5 +1,6 @@
-﻿using RegistrationApi.Models;
+﻿using Microsoft.EntityFrameworkCore;
 using RegistrationApi.Data;
+using RegistrationApi.Models;
 
 namespace RegistrationApi.Services
 {
@@ -7,10 +8,12 @@ namespace RegistrationApi.Services
     {
         public static string LoginUser(string email, string password)
         {
-            //var user = RegistrationDbContext.Users.First(u => u.email == email && u.password == password);
-            if (RegistrationDbContext.Users.First(u => u.email == email && u.password == password) != null)
+            using (var db = new RegistrationDbContext(new DbContextOptions<RegistrationDbContext>()))
             {
-                return "Успех";
+                if (db.Users.Any(u => u.email == email && u.password == password))
+                {
+                    return "Успех";
+                }
             }
             return "Такого пользователя нет";
         }
