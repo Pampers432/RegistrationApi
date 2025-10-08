@@ -5,9 +5,17 @@ namespace RegistrationApi.Data
 {
     public class RegistrationDbContext : DbContext
     {
-        public RegistrationDbContext(DbContextOptions<RegistrationDbContext> options) : base(options)
+        public RegistrationDbContext(DbContextOptions<RegistrationDbContext> options) : base()
         { }
 
-        public static DbSet<User> Users { get; set; }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=RegistrationDb;Trusted_Connection=True;");
+            }
+        }
+
+        public DbSet<User> Users { get; set; }
     }
 }

@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using RegistrationApi.Data;
 
 namespace RegistrationApi
 {
@@ -6,6 +8,9 @@ namespace RegistrationApi
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddDbContext<RegistrationDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Add services to the container.
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RegistrationApi.Models;
+using RegistrationApi.Services;
 
 namespace RegistrationApi.Controllers
 {
@@ -10,21 +11,33 @@ namespace RegistrationApi.Controllers
     {
         public UsersController() { }
 
-        [HttpGet]
-        public User GetUser(string email, string password)
+        [HttpGet("Register")]
+        public string Register(string email, string password)
         {
-            return Models.User.CreateUser(0, email, password);
+            return RegistrationService.RegisterUser(email, password);
         }
 
-
-        [HttpGet("create-multiple")]
-        public IEnumerable<User> GetUsers()
+        [HttpGet("Login")]
+        public string Login(string email, string password)
         {
-            return new List<User> {
-                Models.User.CreateUser(0, "alex123@1234", "1234"),
-                Models.User.CreateUser(1, "max233@1234", "15434"),
-                Models.User.CreateUser(2, "anton223433@1234", "15gfs4")
-            };
+            return LoginService.LoginUser(email, password);
         }
+
+        //[HttpGet]
+        //public User GetUser(string email, string password)
+        //{
+        //    return Models.User.CreateUser(email, password);
+        //}
+
+
+        //[HttpGet("create-multiple")]
+        //public IEnumerable<User> GetUsers()
+        //{
+        //    return new List<User> {
+        //        Models.User.CreateUser("alex123@1234", "1234"),
+        //        Models.User.CreateUser("max233@1234", "15434"),
+        //        Models.User.CreateUser("anton223433@1234", "15gfs4")
+        //    };
+        //}
     }
 }
