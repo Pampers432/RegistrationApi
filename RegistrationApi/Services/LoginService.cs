@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RegistrationApi.Contracts;
 using RegistrationApi.Data;
 using RegistrationApi.Models;
 
@@ -6,16 +7,17 @@ namespace RegistrationApi.Services
 {
     public class LoginService
     {
-        public static string LoginUser(string email, string password)
+        public static UserResponse LoginUser(User user)
         {
             using (var db = new RegistrationDbContext(new DbContextOptions<RegistrationDbContext>()))
             {
-                if (db.Users.Any(u => u.email == email && u.password == password))
+                if (db.Users.Any(u => u.email == user.email && u.password == user.password))
                 {
-                    return "Успех";
+                    UserResponse userResponse = new UserResponse (user.email, user.password, "JWT");
+                    return userResponse;
                 }
             }
-            return "Такого пользователя нет";
+            throw new Exception("Такого пользователя нет"); // Возможно выкидывать exception
         }
     }
 }

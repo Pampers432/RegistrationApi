@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RegistrationApi.Contracts;
 using RegistrationApi.Models;
 using RegistrationApi.Services;
 
@@ -11,16 +12,18 @@ namespace RegistrationApi.Controllers
     {
         public UsersController() { }
 
-        [HttpGet("Register")]
-        public string Register(string email, string password)
+        [HttpPost("Register")]
+        public string Register([FromBody] UserRequest userRequest)
         {
-            return RegistrationService.RegisterUser(email, password);
+            User user = Models.User.CreateUser(userRequest.email, userRequest.password);
+            return RegistrationService.RegisterUser(user);
         }
 
-        [HttpGet("Login")]
-        public string Login(string email, string password)
+        [HttpPost("Login")]
+        public UserResponse Login([FromBody] UserRequest userRequest)
         {
-            return LoginService.LoginUser(email, password);
+            User user = Models.User.CreateUser(userRequest.email, userRequest.password);
+            return LoginService.LoginUser(user);
         }
 
         //[HttpGet]
