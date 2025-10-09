@@ -8,13 +8,13 @@ namespace RegistrationApi.Services
 {
     public class RegistrationService
     {
-        public static string RegisterUser(string email, string password)
+        public static string RegisterUser(User user)
         {
             using (var db = new RegistrationDbContext(new DbContextOptions<RegistrationDbContext>()))
             {
-                if (db.Users.Any(u => u.email == email)) return "Пользователь с таким email уже есть";
+                if (db.Users.Any(u => u.email == user.email)) return "Пользователь с таким email уже есть";
 
-                UsersRepository.AddUser(email, password);
+                UsersRepository.AddUser(user);
             }
 
             return "Успех";

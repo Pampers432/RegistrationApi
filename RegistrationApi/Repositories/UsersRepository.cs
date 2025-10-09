@@ -6,9 +6,8 @@ namespace RegistrationApi.Repositories
 {
     public class UsersRepository
     {
-        public static void AddUser(string email, string password)
+        public static void AddUser(User user)
         {
-            var user = User.CreateUser(email, password);
 
             using (var db = new RegistrationDbContext(new DbContextOptions<RegistrationDbContext>()))
             {
