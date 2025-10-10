@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RegistrationApi.Contracts;
 using RegistrationApi.Models;
+using RegistrationApi.Repositories;
 using RegistrationApi.Services;
 
 namespace RegistrationApi.Controllers
@@ -10,7 +11,11 @@ namespace RegistrationApi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        public UsersController() { }
+        private readonly JwtService jwtService;
+        public UsersController(JwtService jwtService)
+        {
+            this.jwtService = jwtService;
+        }
 
         [HttpPost("Register")]
         public string Register([FromBody] UserRequest userRequest)
@@ -23,7 +28,14 @@ namespace RegistrationApi.Controllers
         public UserResponse Login([FromBody] UserRequest userRequest)
         {
             User user = Models.User.CreateUser(userRequest.email, userRequest.password);
-            return LoginService.LoginUser(user);
+            var token = jwtService.GenerateToken(user);
+            return LoginService.LoginUser(user, token);
+        }
+
+        [HttpPut("ChangePassword")]
+        public string ChangePassword([FromBody] UserUpdateRequest userUpdateRequest)
+        {
+            return UsersRepository.UpdateUserPassword(userUpdateRequest);
         }
 
         //[HttpGet]

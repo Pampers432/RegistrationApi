@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using RegistrationApi.Contracts;
 using RegistrationApi.Data;
+using RegistrationApi.Services;
 
 namespace RegistrationApi
 {
@@ -17,6 +19,8 @@ namespace RegistrationApi
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+            builder.Services.AddScoped<JwtService>();
 
             var app = builder.Build();
 
