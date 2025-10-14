@@ -17,6 +17,12 @@ namespace RegistrationApi.Repositories
             }
         }
 
+        public static List<User> GetUsers()
+        {
+            using var db = new RegistrationDbContext(new DbContextOptions<RegistrationDbContext>());
+            return db.Users.ToList();
+        }
+
         public static string UpdateUserPassword(UserUpdateRequest user)
         {
 

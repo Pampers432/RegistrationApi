@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using RegistrationApi.Contracts;
 using RegistrationApi.Data;
+using RegistrationApi.Extensions;
 using RegistrationApi.Services;
 
 namespace RegistrationApi
@@ -20,7 +22,9 @@ namespace RegistrationApi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+            var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
             builder.Services.AddScoped<JwtService>();
+            builder.Services.AddApiAuthentification(Options.Create(jwtOptions));
 
             var app = builder.Build();
 
@@ -33,6 +37,7 @@ namespace RegistrationApi
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

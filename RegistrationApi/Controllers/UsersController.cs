@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RegistrationApi.Contracts;
 using RegistrationApi.Models;
@@ -29,6 +30,7 @@ namespace RegistrationApi.Controllers
         {
             User user = Models.User.CreateUser(userRequest.email, userRequest.password);
             var token = jwtService.GenerateToken(user);
+            HttpContext.Response.Cookies.Append("TastyCoks", token);
             return LoginService.LoginUser(user, token);
         }
 
@@ -38,11 +40,12 @@ namespace RegistrationApi.Controllers
             return UsersRepository.UpdateUserPassword(userUpdateRequest);
         }
 
-        //[HttpGet]
-        //public User GetUser(string email, string password)
-        //{
-        //    return Models.User.CreateUser(email, password);
-        //}
+        [Authorize]
+        [HttpGet]
+        public List<User> GetUsers()
+        {
+            return UsersRepository.GetUsers();
+        }
 
 
         //[HttpGet("create-multiple")]
