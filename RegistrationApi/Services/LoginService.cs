@@ -1,23 +1,31 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RegistrationApi.Contracts;
+﻿using RegistrationApi.Contracts;
 using RegistrationApi.Data;
 using RegistrationApi.Models;
 
 namespace RegistrationApi.Services
 {
-    public class LoginService
+    public class LoginService : ILoginService
     {
-        public static UserResponse LoginUser(User user, string token)
+        private readonly RegistrationDbContext _db;
+
+        public LoginService(RegistrationDbContext db)
         {
-            using (var db = new RegistrationDbContext(new DbContextOptions<RegistrationDbContext>()))
+            _db = db;
+        }
+
+        public UserResponse LoginUser(User user, string token)
+        {
+            if (_db.Users.Any(u => u.email == user.email && u.password == user.password))
             {
-                if (db.Users.Any(u => u.email == user.email && u.password == user.password))
-                {
-                    UserResponse userResponse = new UserResponse (user.email, user.password, token);
-                    return userResponse;
-                }
+                return new UserResponse(user.email, user.password, token);
             }
-            throw new Exception("Такого пользователя нет"); // Возможно выкидывать exception
+
+            return null;
+        }
+
+        public User GetUser(UserRequest user)
+        {
+            return _db.Users.FirstOrDefault(u => u.email == user.email && u.password == user.password);
         }
     }
 }

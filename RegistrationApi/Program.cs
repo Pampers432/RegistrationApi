@@ -22,6 +22,7 @@ namespace RegistrationApi
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddScoped<ILoginService, LoginService>();
             builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
             var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
             builder.Services.AddScoped<JwtService>();
@@ -47,6 +48,11 @@ namespace RegistrationApi
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseCors(policy =>
+                policy.WithOrigins("http://localhost:3000")
+                      .AllowAnyHeader()
+                      .AllowAnyMethod());
 
 
             app.MapControllers();

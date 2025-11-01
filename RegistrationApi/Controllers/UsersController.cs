@@ -13,9 +13,11 @@ namespace RegistrationApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly JwtService jwtService;
-        public UsersController(JwtService jwtService)
+        private readonly ILoginService loginService;
+        public UsersController(JwtService jwtService, ILoginService loginService)
         {
             this.jwtService = jwtService;
+            this.loginService = loginService;
         }
 
         [HttpPost("Register")]
@@ -26,13 +28,23 @@ namespace RegistrationApi.Controllers
         }
 
         [HttpPost("Login")]
-        public UserResponse Login([FromBody] UserRequest userRequest)
+        public async Task<ActionResult<UserResponse>> Login([FromBody] UserRequest userRequest)
         {
-            User user = Models.User.CreateUser(userRequest.email, userRequest.password);
-            var token = jwtService.GenerateToken(user);
-            HttpContext.Response.Cookies.Append("TastyCoks", token);
-            return LoginService.LoginUser(user, token);
+            try
+            {
+                var user = loginService.GetUser(userRequest);
+                var token = jwtService.GenerateToken(user);
+                HttpContext.Response.Cookies.Append("TastyCoks", token);
+                var response = loginService.LoginUser(user, token);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Ошибка логина: " + ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
+
 
         [HttpPut("ChangePassword")]
         public string ChangePassword([FromBody] UserUpdateRequest userUpdateRequest)

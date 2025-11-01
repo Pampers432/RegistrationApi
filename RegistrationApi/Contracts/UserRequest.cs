@@ -10,7 +10,6 @@
         string newPassword);
 
     public record UserResponse(
-        //int id,???
         string email,
         string password,
         string jwt
